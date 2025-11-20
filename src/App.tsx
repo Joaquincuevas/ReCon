@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { ArrowRight, Recycle, Mouse, Menu, X } from "lucide-react";
 
-const heroImage = "https://recon-circular-concrete.lovable.app/assets/process-plant-BCt89j0G.jpg";
+const heroImage = "/hero-concrete.jpg";
 const aggregateImage =
   "https://images.unsplash.com/photo-1503389152951-9f343605f61e?auto=format&fit=crop&w=1200&q=80";
 
@@ -43,10 +44,10 @@ type FooterColumn = {
 };
 
 const navItems: NavItem[] = [
-  { label: "Innovación", target: "innovacion" },
+  { label: "Nosotros", target: "innovacion" },
   { label: "Servicios", target: "servicios" },
   { label: "Impacto", target: "impacto" },
-  { label: "Contáctanos", target: "contacto", isCta: true },
+  { label: "Contacto", target: "contacto", isCta: true },
 ];
 
 const processHighlights: ProcessHighlight[] = [
@@ -200,85 +201,142 @@ const scrollToSection = (targetId: string) => {
   element?.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
-const Navigation = () => (
-  <nav className="nav">
-    <a
-      className="brand"
-      href="#inicio"
-      onClick={(event) => {
-        event.preventDefault();
-        scrollToSection("inicio");
-      }}
-    >
-      ReCon
-    </a>
-    <div className="nav-links">
-      {navItems.map(({ label, target, isCta }) => (
+const Navigation = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 h-20 flex items-center">
+      <div className="container mx-auto px-6 flex items-center justify-between w-full">
         <a
-          key={label}
-          className={isCta ? "nav-cta" : undefined}
-          href={`#${target}`}
+          className="flex items-center gap-2 text-2xl font-bold text-primary tracking-tight"
+          href="#inicio"
           onClick={(event) => {
             event.preventDefault();
-            scrollToSection(target);
+            scrollToSection("inicio");
           }}
         >
-          {label}
+          <div className="bg-primary rounded-full p-1.5">
+            <Recycle className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-primary">ReCon</span>
         </a>
-      ))}
-    </div>
-  </nav>
-);
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-8">
+          {navItems.map(({ label, target, isCta }) => (
+            <a
+              key={label}
+              className={
+                isCta
+                  ? "px-6 py-2.5 rounded-md bg-primary text-white font-medium hover:bg-primary/90 transition-all shadow-sm hover:shadow-md"
+                  : "text-base font-medium text-gray-600 hover:text-primary transition-colors"
+              }
+              href={`#${target}`}
+              onClick={(event) => {
+                event.preventDefault();
+                scrollToSection(target);
+              }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden text-gray-600"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <X /> : <Menu />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="absolute top-20 left-0 right-0 bg-white border-b border-gray-100 p-6 md:hidden flex flex-col gap-4 shadow-lg">
+          {navItems.map(({ label, target, isCta }) => (
+            <a
+              key={label}
+              className={
+                isCta
+                  ? "px-6 py-3 rounded-md bg-primary text-white font-medium text-center"
+                  : "text-base font-medium text-gray-600 hover:text-primary py-2"
+              }
+              href={`#${target}`}
+              onClick={(event) => {
+                event.preventDefault();
+                scrollToSection(target);
+                setIsMenuOpen(false);
+              }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+};
 
 const HeroSection = () => (
-  <header className="hero" id="inicio">
-    <Navigation />
-    <div className="hero-content">
-      <div className="hero-text">
-        <span className="eyebrow">Reciclaje Circular de Hormigón</span>
-        <h1>Transformamos Hormigón en Futuro Sostenible</h1>
-        <p>
-          Reciclaje avanzado de hormigón con biocarbonatación y carbonatación
-          acelerada. Reducimos el impacto ambiental y cerramos el ciclo de la
-          construcción.
-        </p>
-        <div className="hero-actions">
-          <a
-            className="btn primary"
-            href="#servicios"
-            onClick={(event) => {
-              event.preventDefault();
-              scrollToSection("servicios");
-            }}
-          >
-            Conoce Nuestros Servicios
-          </a>
-          <a
-            className="btn secondary"
-            href="#contacto"
-            onClick={(event) => {
-              event.preventDefault();
-              scrollToSection("contacto");
-            }}
-          >
-            Contáctanos
-          </a>
-        </div>
-      </div>
+  <header className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden" id="inicio">
+    {/* Background Image */}
+    <div className="absolute inset-0 z-0">
+      <img
+        src={heroImage}
+        alt="Planta de procesamiento de hormigón reciclado"
+        className="w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-black/60" />
+    </div>
 
-      <div className="hero-image">
-        <img src={heroImage} alt="Planta de procesamiento de hormigón reciclado" />
+    <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center animate-fade-in">
+      <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 tracking-tight text-white max-w-5xl">
+        Transformamos Hormigón en <br className="hidden md:block" /> Futuro Sostenible
+      </h1>
+      <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-3xl leading-relaxed">
+        Reciclaje avanzado de hormigón con biocarbonatación y carbonatación
+        acelerada. Reducimos el impacto ambiental y cerramos el ciclo de la
+        construcción.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+        <a
+          className="inline-flex items-center justify-center px-8 py-4 rounded-md bg-primary text-white font-semibold hover:bg-primary/90 transition-all hover:-translate-y-1 shadow-lg hover:shadow-xl gap-2"
+          href="#servicios"
+          onClick={(event) => {
+            event.preventDefault();
+            scrollToSection("servicios");
+          }}
+        >
+          Conoce Nuestros Servicios <ArrowRight className="w-5 h-5" />
+        </a>
+        <a
+          className="inline-flex items-center justify-center px-8 py-4 rounded-md border border-white text-white hover:bg-white/10 font-semibold transition-all hover:-translate-y-1"
+          href="#contacto"
+          onClick={(event) => {
+            event.preventDefault();
+            scrollToSection("contacto");
+          }}
+        >
+          Contáctanos
+        </a>
       </div>
+    </div>
+
+    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/80 animate-bounce hidden md:block">
+      <Mouse className="w-8 h-8" />
     </div>
   </header>
 );
 
 const InnovationSection = () => (
-  <section className="section innovation" id="innovacion">
-    <div className="section-header">
-      <span className="eyebrow">Innovación en Reciclaje de Hormigón</span>
-      <h2>Nuestro Proceso Tecnológico</h2>
-      <p>
+  <section className="py-20 md:py-32 px-6 bg-accent/5" id="innovacion">
+    <div className="max-w-3xl mx-auto text-center mb-16">
+      <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 border border-primary/20">
+        Innovación en Reciclaje de Hormigón
+      </span>
+      <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">Nuestro Proceso Tecnológico</h2>
+      <p className="text-lg text-muted-foreground leading-relaxed">
         Aplicamos técnicas avanzadas de biocarbonatación y carbonatación acelerada con CO₂
         para mejorar las propiedades mecánicas del árido reciclado y capturar emisiones de
         carbono en el proceso. Este proceso innovador permite que el material cumpla con los
@@ -287,15 +345,19 @@ const InnovationSection = () => (
       </p>
     </div>
 
-    <div className="innovation-grid">
-      <div className="innovation-image">
-        <img src={aggregateImage} alt="Áridos reciclados con certificación" />
+    <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video lg:aspect-square">
+        <img
+          src={aggregateImage}
+          alt="Áridos reciclados con certificación"
+          className="w-full h-full object-cover"
+        />
       </div>
-      <div className="cards-grid">
+      <div className="grid sm:grid-cols-2 gap-6">
         {processHighlights.map((item) => (
-          <article key={item.title} className="card">
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
+          <article key={item.title} className="p-6 rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+            <h3 className="text-xl font-bold mb-3 text-foreground">{item.title}</h3>
+            <p className="text-muted-foreground leading-relaxed">{item.description}</p>
           </article>
         ))}
       </div>
@@ -304,23 +366,28 @@ const InnovationSection = () => (
 );
 
 const ServicesSection = () => (
-  <section className="section services" id="servicios">
-    <div className="section-header">
-      <span className="eyebrow">Nuestros Servicios</span>
-      <h2>
+  <section className="py-20 md:py-32 px-6" id="servicios">
+    <div className="max-w-3xl mx-auto text-center mb-16">
+      <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 border border-primary/20">
+        Nuestros Servicios
+      </span>
+      <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
         Ofrecemos un servicio integral desde la recolección hasta la entrega del material
         certificado
       </h2>
     </div>
 
-    <div className="service-columns">
+    <div className="container mx-auto grid md:grid-cols-3 gap-8">
       {serviceSections.map((section) => (
-        <article key={section.id} className="service-card" id={section.id}>
-          <h3>{section.title}</h3>
-          <p className="service-description">{section.description}</p>
-          <ul>
+        <article key={section.id} className="p-8 rounded-2xl bg-card border border-border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 flex flex-col" id={section.id}>
+          <h3 className="text-2xl font-bold mb-4">{section.title}</h3>
+          <p className="text-muted-foreground mb-6 flex-grow">{section.description}</p>
+          <ul className="space-y-3">
             {section.features.map((feature) => (
-              <li key={feature}>{feature}</li>
+              <li key={feature} className="flex items-start gap-3 text-sm text-muted-foreground">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                {feature}
+              </li>
             ))}
           </ul>
         </article>
@@ -330,30 +397,35 @@ const ServicesSection = () => (
 );
 
 const ImpactSection = () => (
-  <section className="section impact" id="impacto">
-    <div className="section-header">
-      <span className="eyebrow">Impacto Ambiental</span>
-      <h2>
+  <section className="py-20 md:py-32 px-6 bg-primary text-primary-foreground" id="impacto">
+    <div className="max-w-3xl mx-auto text-center mb-16">
+      <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-white text-sm font-medium mb-6 border border-white/20">
+        Impacto Ambiental
+      </span>
+      <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white">
         Contribuimos activamente a la reducción del impacto ambiental de la industria de la
         construcción
       </h2>
     </div>
 
-    <div className="impact-content">
-      <div className="metrics-grid">
+    <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-start">
+      <div className="grid sm:grid-cols-2 gap-6">
         {impactMetrics.map((metric) => (
-          <article key={metric.title} className="metric-card">
-            <h3>{metric.title}</h3>
-            <p>{metric.description}</p>
+          <article key={metric.title} className="p-6 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10">
+            <h3 className="text-xl font-bold mb-2 text-white">{metric.title}</h3>
+            <p className="text-white/80">{metric.description}</p>
           </article>
         ))}
       </div>
 
-      <div className="benefits">
-        <h3>Beneficios de Trabajar con ReCon</h3>
-        <ul>
+      <div className="p-8 rounded-2xl bg-white text-primary shadow-xl">
+        <h3 className="text-2xl font-bold mb-6">Beneficios de Trabajar con ReCon</h3>
+        <ul className="space-y-4">
           {impactBenefits.map((benefit) => (
-            <li key={benefit}>{benefit}</li>
+            <li key={benefit} className="flex items-start gap-3">
+              <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary text-sm font-bold">✓</span>
+              <span className="text-foreground/80">{benefit}</span>
+            </li>
           ))}
         </ul>
       </div>
@@ -382,78 +454,89 @@ const ContactSection = () => {
   };
 
   return (
-    <section className="section contact" id="contacto">
-      <div className="section-header">
-        <span className="eyebrow">Contáctanos</span>
-        <h2>
+    <section className="py-20 md:py-32 px-6" id="contacto">
+      <div className="max-w-3xl mx-auto text-center mb-16">
+        <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 border border-primary/20">
+          Contáctanos
+        </span>
+        <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
           ¿Tienes un proyecto? Hablemos sobre cómo podemos ayudarte con soluciones
           sostenibles
         </h2>
       </div>
 
-      <div className="contact-grid">
-        <div className="contact-cards">
+      <div className="container mx-auto grid lg:grid-cols-2 gap-12">
+        <div className="grid sm:grid-cols-2 gap-6 content-start">
           {contactCards.map((card) => (
-            <article key={card.title} className="contact-card">
-              <h3>{card.title}</h3>
+            <article key={card.title} className="p-6 rounded-2xl bg-card border border-border shadow-sm">
+              <h3 className="text-lg font-bold mb-4 text-primary">{card.title}</h3>
               {card.lines.map((line) => (
-                <p key={line}>{line}</p>
+                <p key={line} className="text-muted-foreground mb-1">{line}</p>
               ))}
             </article>
           ))}
         </div>
 
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <h3>Envíanos un mensaje</h3>
-          <div className="form-group">
-            <label htmlFor="name">Nombre</label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Nombre completo"
-              value={formState.name}
-              onChange={handleChange("name")}
-              required
-            />
+        <form className="p-8 rounded-2xl bg-card border border-border shadow-lg" onSubmit={handleSubmit}>
+          <h3 className="text-2xl font-bold mb-6">Envíanos un mensaje</h3>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Nombre</label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Nombre completo"
+                value={formState.name}
+                onChange={handleChange("name")}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="correo@empresa.com"
+                value={formState.email}
+                onChange={handleChange("email")}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="company" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Empresa</label>
+              <input
+                id="company"
+                name="company"
+                type="text"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Nombre de la empresa"
+                value={formState.company}
+                onChange={handleChange("company")}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="message" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Mensaje</label>
+              <textarea
+                id="message"
+                name="message"
+                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Cuéntanos sobre tu proyecto"
+                value={formState.message}
+                onChange={handleChange("message")}
+                required
+              />
+            </div>
+            <button
+              className="w-full inline-flex items-center justify-center px-8 py-3 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg"
+              type="submit"
+            >
+              Enviar Mensaje
+            </button>
           </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="correo@empresa.com"
-              value={formState.email}
-              onChange={handleChange("email")}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="company">Empresa</label>
-            <input
-              id="company"
-              name="company"
-              type="text"
-              placeholder="Nombre de la empresa"
-              value={formState.company}
-              onChange={handleChange("company")}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="message">Mensaje</label>
-            <textarea
-              id="message"
-              name="message"
-              placeholder="Cuéntanos sobre tu proyecto"
-              value={formState.message}
-              onChange={handleChange("message")}
-              required
-            />
-          </div>
-          <button className="btn primary" type="submit">
-            Enviar Mensaje
-          </button>
         </form>
       </div>
     </section>
@@ -464,33 +547,36 @@ const FooterSection = () => {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   return (
-    <footer className="footer">
-      <div className="footer-main">
-        <div className="footer-brand">
-          <span className="footer-logo">ReCon</span>
-          <p>
+    <footer className="bg-muted/30 border-t border-border pt-16 pb-8 px-6">
+      <div className="container mx-auto grid md:grid-cols-4 gap-12 mb-12">
+        <div className="md:col-span-1">
+          <span className="text-2xl font-bold text-primary block mb-4">ReCon</span>
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Innovación ambiental que convierte residuos de hormigón en materiales de
             construcción sostenibles.
           </p>
         </div>
 
-        <div className="footer-links">
-          {footerColumns.map((column) => (
-            <div key={column.heading} className="footer-column">
-              <h4>{column.heading}</h4>
-              <ul>
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <a href={link.href}>{link.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        {footerColumns.map((column) => (
+          <div key={column.heading} className="flex flex-col gap-4">
+            <h4 className="font-bold text-foreground">{column.heading}</h4>
+            <ul className="space-y-2">
+              {column.links.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
-      <div className="footer-bottom">
+      <div className="container mx-auto pt-8 border-t border-border text-center text-sm text-muted-foreground">
         <p>© {currentYear} ReCon - Recycled Concrete. Todos los derechos reservados.</p>
       </div>
     </footer>
@@ -499,7 +585,8 @@ const FooterSection = () => {
 
 function App() {
   return (
-    <div className="app">
+    <div className="min-h-screen bg-background text-foreground font-sans antialiased selection:bg-primary/20 selection:text-primary">
+      <Navigation />
       <HeroSection />
       <main>
         <InnovationSection />
